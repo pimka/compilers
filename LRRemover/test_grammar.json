@@ -1,0 +1,88 @@
+{
+    "terminals" : [
+        {
+            "name" : "a",
+            "spell" : "IDENTa"
+        },
+        {
+            "name" : "b",
+            "spell" : "IDENTb"
+        },
+        {
+            "name" : "c",
+            "spell" : "IDENTc"
+        },
+        {
+            "name" : "d",
+            "spell" : "IDENTd"
+        },
+        {
+            "name" : "e",
+            "spell" : "EMPTY"
+        }
+    ],
+    "nonterminals" : [
+        "S",
+        "A"
+    ],
+    "productions" : [
+        {
+            "left" : "S",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "A"
+                },
+                {
+                    "isTerminal" : "True",
+                    "name" : "a"
+                }
+            ]
+        },
+        {
+            "left" : "S",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "b"
+                }
+            ]
+        },
+        {
+            "left" : "A",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "A"
+                },
+                {
+                    "isTerminal" : "True",
+                    "name" : "c"
+                }
+            ]
+        },
+        {
+            "left" : "A",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "S"
+                },
+                {
+                    "isTerminal" : "True",
+                    "name" : "d"
+                }
+            ]
+        },
+        {
+            "left" : "A",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "e"
+                }
+            ]
+        }
+    ],
+    "startSymbolName" : "S"
+}
