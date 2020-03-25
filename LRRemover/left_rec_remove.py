@@ -1,4 +1,5 @@
 import json
+from collections import namedtuple
 
 class Grammar:
     def __init__(self, path_to_json):
@@ -27,6 +28,7 @@ class Grammar:
             prods = self.__findProduction(self.nonterminals[i], self.nonterminals[i])
             if prods:
                 left_prods = self.__findProductionsByLeft(self.nonterminals[i])
+                self.nonterminals.append(f'{self.nonterminals[i]}\'')
                 for pr in left_prods:
                     if pr not in prods:
                         pr['right'].append(
@@ -62,7 +64,7 @@ class Grammar:
         result = []
         right = {'isTerminal':'False', 'name':right}
         for prod in self.productions:
-            if prod['left'] == left and right in prod['right']:
+            if prod['left'] == left and right == prod['right'][0]:
                 result.append(prod)
 
         return result
@@ -87,6 +89,64 @@ class Grammar:
 
         return prod_copy
 
-gr = Grammar('LRRemover/test_grammar.json')
+    def left_factorization(self):
+        for nt in self.nonterminals:
+            prods = self.__findProductionsByLeft(nt)
+            for i in prods.copy():
+                if not {'isTerminal':'False','name':nt} in i['right']:
+                    prods.remove(i)
+            if prods:
+                alpha = frozenset(self.__to_tuple(prods[0]['right']))
+                for i in prods:
+                    alpha = alpha.intersection(frozenset(self.__to_tuple(i['right'])))
+                
+                if not alpha:
+                    return 
+
+                alpha = self.__to_dict(alpha)
+                right = alpha + [{
+                            'isTerminal' : 'False',
+                            'name' : f'{nt}^'
+                        }]
+                self.productions.append({
+                    'left' : nt,
+                    'right' : right
+                })
+
+                for pr in prods:
+                    self.productions.remove(pr)
+                    for a in alpha:
+                        pr['right'].remove(a)
+                    if not pr['right']:
+                        pr['right'].append({
+                            'isTerminal' : 'True',
+                            'name' : 'e'
+                        })
+                    self.productions.append({
+                        'left':f'{nt}^',
+                        'right':pr['right']
+                    })
+
+    def __to_tuple(self, data):
+        result = []
+        symbol = namedtuple('Symbol', ['pos', 'value'])
+        for i, j in enumerate(data):
+            result.append(symbol(pos=i, value=j['name']))
+        
+        return result
+
+    def __to_dict(self, data):
+        result = []
+        data = list(data)
+        data.sort(key=lambda i:i.pos)
+        for i in data:
+            result.append({
+                'isTerminal' : f'{not i.value in self.nonterminals}',
+                'name' : i.value
+            })
+
+        return result
+
+gr = Grammar('LRRemover/test_grammar copy.json')
 gr.remove_recursion()
-print()
+gr.left_factorization()
