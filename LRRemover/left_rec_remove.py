@@ -146,7 +146,3 @@ class Grammar:
             })
 
         return result
-
-gr = Grammar('LRRemover/test_grammar copy.json')
-gr.remove_recursion()
-gr.left_factorization()
