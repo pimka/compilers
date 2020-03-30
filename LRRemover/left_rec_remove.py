@@ -9,6 +9,12 @@ class Grammar:
         self.productions = dict_temp['productions']
         self.startSymbolName = dict_temp['startSymbolName']
 
+    def fromModified(self, mg):
+        self.terminals = mg.terminals
+        self.nonterminals = list(mg.nonterminals)
+        self.productions = mg.productions
+        self.startSymbolName = mg.startSymbol
+
     def __jsonParser(self, path_to_json):
         file = open(path_to_json)
         json_file = json.load(file)
@@ -126,6 +132,7 @@ class Grammar:
                         'left':f'{nt}^',
                         'right':pr['right']
                     })
+                    self.nonterminals.append(f'{nt}^')
 
     def __to_tuple(self, data):
         result = []

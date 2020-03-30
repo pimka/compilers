@@ -1,0 +1,157 @@
+{
+    "terminals" : [
+        {
+            "name" : "a",
+            "spell" : "IDENTa"
+        },
+        {
+            "name" : "b",
+            "spell" : "IDENTb"
+        },
+        {
+            "name" : "c",
+            "spell" : "IDENTc"
+        },
+        {
+            "name" : "ε",
+            "spell" : "EMPTY"
+        }
+    ],
+    "nonterminals" : [
+        "S",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+    ],
+    "productions" : [
+        {
+            "left" : "S",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "A"
+                }
+            ]
+        },
+        {
+            "left" : "S",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "B"
+                }
+            ]
+        },
+        {
+            "left" : "A",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "C"
+                }
+            ]
+        },
+        {
+            "left" : "A",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "D"
+                }
+            ]
+        },
+        {
+            "left" : "B",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "D"
+                }
+            ]
+        },
+        {
+            "left" : "B",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "E"
+                }
+            ]
+        },
+        {
+            "left" : "C",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "S"
+                }
+            ]
+        },
+        {
+            "left" : "C",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "a"
+                }
+            ]
+        },
+        {
+            "left" : "C",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "ε"
+                }
+            ]
+        },
+        {
+            "left" : "D",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "S"
+                }
+            ]
+        },
+        {
+            "left" : "D",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "b"
+                }
+            ]
+        },
+        {
+            "left" : "E",
+            "right" : [
+                {
+                    "isTerminal" : "False",
+                    "name" : "S"
+                }
+            ]
+        },
+        {
+            "left" : "E",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "c"
+                }
+            ]
+        },
+        {
+            "left" : "E",
+            "right" : [
+                {
+                    "isTerminal" : "True",
+                    "name" : "ε"
+                }
+            ]
+        }
+    ],
+    "startSymbolName" : "S"
+}

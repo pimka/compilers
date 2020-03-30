@@ -3,7 +3,7 @@ from itertools import combinations
 from left_rec_remove import Grammar
 
 
-class ModifiedGrammar:
+class ModifiedGrammar(Grammar):
     def __init__(self, grammar):
         self.terminals = grammar.terminals
         self.nonterminals = grammar.nonterminals
@@ -13,29 +13,50 @@ class ModifiedGrammar:
     def usefulSymbols(self):
         result = set()
         N = { 0: set()}
-        i = 1
+        i = 0
 
-        for nonterminal in self.nonterminals:
-            prods = []
+        while i == 0 or N[i] != N[i-1]:
+            i += 1
             alpha = N[i-1] | set([j['name'] for j in self.terminals])
-
-            for pr in self.productions:
-                if pr['left'] == nonterminal:
-                    for s in pr['right']:
-                        if s['name'] in alpha:
-                            prods.append(pr)
-                            break
-                
+            prods = []
+            for nonterminal in self.nonterminals:
+                for pr in self.productions:
+                    if pr['left'] == nonterminal:
+                        for s in pr['right']:
+                            if s['name'] in alpha:
+                                prods.append(pr)
+                                break
+                    
             if prods:
                 temp = N[i-1].copy()
-                temp.add(nonterminal)
+                for j in prods:
+                    temp.add(j['left'])
                 N[i] = temp
-            else:
-                N[i] = N[i-1]
-                
-            result = N[i]
-            i += 1
 
+        result = N[i]
+        return result
+
+    def __epsSymbols(self):
+        result = set()
+        N = { 0: set()}
+        i = 0
+
+        while i == 0 or N[i] != N[i-1]:
+            i += 1
+            prods = []
+            for pr in self.productions:
+                for s in pr['right']:
+                    if s['name'] == 'ε' or s['name'] in N[i-1]:
+                        prods.append(pr)
+                        break
+                    
+            if prods:
+                temp = N[i-1].copy()
+                for j in prods:
+                    temp.add(j['left'])
+                N[i] = temp
+
+        result = N[i]
         return result
 
     def epsSymbols(self):
@@ -88,7 +109,7 @@ class ModifiedGrammar:
                 self.terminals.remove(t)
 
     def removeEpsRules(self):
-        epsSymbols = self.epsSymbols()
+        epsSymbols = self.__epsSymbols()
         new_prods = []
 
         for pr in self.productions:
@@ -111,7 +132,7 @@ class ModifiedGrammar:
                 all_combinations = list(combinations(elems, len(elems) - space_counter))
                 
                 for comb in all_combinations.copy():
-                    c = list(filter(lambda x: x != '' and not x[0] in eps_in_pr, comb))
+                    c = list(filter(lambda x: x != '' '''and not x[0] in eps_in_pr''', comb))
 
                     if not c:
                         all_combinations.remove(comb)
@@ -152,14 +173,12 @@ class ModifiedGrammar:
         
         self.productions = new_prods
 
-    def __getCombinations(self, production, epsSymbols):
-        positions = []
-        for element in production['right']:
-            pass
 
-gr = Grammar('LRRemover/test_grammar.json')
-gr.remove_recursion()
-gr.left_factorization()
+gr = Grammar('LRRemover/test_grammar copy 2.json')
 mgr = ModifiedGrammar(gr)
 mgr.removeUselessSymbols()
 mgr.removeEpsRules()
+'''gr.fromModified(mgr)
+gr.remove_recursion()
+gr.left_factorization()'''
+print()
