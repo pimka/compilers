@@ -55,7 +55,7 @@ class Grammar:
                     'right' : [
                         {
                             'isTerminal' : 'True',
-                            'name' : 'e'
+                            'name' : 'ε'
                         }
                     ]
                 })
@@ -120,7 +120,7 @@ class Grammar:
                     if not pr['right']:
                         pr['right'].append({
                             'isTerminal' : 'True',
-                            'name' : 'e'
+                            'name' : 'ε'
                         })
                     self.productions.append({
                         'left':f'{nt}^',
