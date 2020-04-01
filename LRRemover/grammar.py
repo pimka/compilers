@@ -172,13 +172,36 @@ class ModifiedGrammar(Grammar):
                     new_prods.append(pr)
         
         self.productions = new_prods
+        self.__sortAll()
+
+    def __sortAll(self):
+        sorted_productions = []
+        sorted_nonterminals = [self.startSymbol]
+        flag = False
+        
+        while True:
+            for n in sorted_nonterminals.copy():
+                for p in self.productions:
+                    if p['left'] == n and not p in sorted_productions:
+                        sorted_productions.append(p)
+                        for r in p['right']:
+                            if r['isTerminal'] == 'False' and not r['name'] in sorted_nonterminals:
+                                sorted_nonterminals.append(r['name'])
+            
+            if flag:
+                break
+            if set(sorted_nonterminals) == set(self.nonterminals):
+                flag = True
+
+        self.productions = sorted_productions
+        self.nonterminals = sorted_nonterminals
 
 
 gr = Grammar('LRRemover/test_grammar copy 2.json')
 mgr = ModifiedGrammar(gr)
 mgr.removeUselessSymbols()
 mgr.removeEpsRules()
-'''gr.fromModified(mgr)
+gr.fromModified(mgr)
 gr.remove_recursion()
-gr.left_factorization()'''
+gr.left_factorization()
 print()
