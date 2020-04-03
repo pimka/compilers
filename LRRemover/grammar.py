@@ -3,12 +3,21 @@ from itertools import combinations
 from left_rec_remove import Grammar
 
 
-class ModifiedGrammar(Grammar):
+class ModifiedGrammar:
     def __init__(self, grammar):
         self.terminals = grammar.terminals
         self.nonterminals = grammar.nonterminals
         self.productions = grammar.productions
         self.startSymbol = grammar.startSymbolName
+        self.__removeCopies()
+
+    def __removeCopies(self):
+        new_prod = []
+        for pr in self.productions.copy():
+            if not pr in new_prod:
+                new_prod.append(pr)
+
+        self.productions = new_prod
 
     def usefulSymbols(self):
         result = set()
@@ -172,6 +181,7 @@ class ModifiedGrammar(Grammar):
                     new_prods.append(pr)
         
         self.productions = new_prods
+        self.removeUnreachableSymbols()
         self.__sortAll()
 
     def __sortAll(self):
@@ -195,13 +205,26 @@ class ModifiedGrammar(Grammar):
 
         self.productions = sorted_productions
         self.nonterminals = sorted_nonterminals
+        self.__removeCopies()
 
+    def removeUnreachableSymbols(self):
+        reachables = set()
 
-gr = Grammar('LRRemover/test_grammar copy 2.json')
+        def dfs(nonterminal):
+            reachables.add(nonterminal)
+
+            for pr in filter(lambda pr: pr['left'] == nonterminal, self.productions):
+                for element in pr['right']:
+                    if element['name'] not in reachables:
+                        dfs(element['name'])
+
+        dfs(self.startSymbol)
+        self.nonterminals = list(filter(lambda nt: nt in reachables, self.nonterminals))
+        self.terminals = list(filter(lambda t: t['name'] in reachables, self.terminals))
+        self.productions = [pr for pr in self.productions if pr['left'] in reachables]
+
+'''gr = Grammar('LRRemover/KFG.json')
 mgr = ModifiedGrammar(gr)
 mgr.removeUselessSymbols()
 mgr.removeEpsRules()
-gr.fromModified(mgr)
-gr.remove_recursion()
-gr.left_factorization()
-print()
+print()'''
