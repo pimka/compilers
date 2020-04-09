@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 from itertools import combinations
 
 from left_rec_remove import Grammar
@@ -141,7 +143,7 @@ class ModifiedGrammar:
                 all_combinations = list(combinations(elems, len(elems) - space_counter))
                 
                 for comb in all_combinations.copy():
-                    c = list(filter(lambda x: x != '' '''and not x[0] in eps_in_pr''', comb))
+                    c = list(filter(lambda x: x != '', comb))
 
                     if not c:
                         all_combinations.remove(comb)
@@ -152,7 +154,7 @@ class ModifiedGrammar:
                         for e in elem:
                             if not e in ['', 'ε']:
                                 new_prod['right'].append({
-                                    'isTerminal' : f'{not e in self.nonterminals}',
+                                    'isTerminal' : f"{not e in self.nonterminals}",
                                     'name' : e
                                 })
                     if new_prod['right']:
@@ -222,9 +224,3 @@ class ModifiedGrammar:
         self.nonterminals = list(filter(lambda nt: nt in reachables, self.nonterminals))
         self.terminals = list(filter(lambda t: t['name'] in reachables, self.terminals))
         self.productions = [pr for pr in self.productions if pr['left'] in reachables]
-
-'''gr = Grammar('LRRemover/KFG.json')
-mgr = ModifiedGrammar(gr)
-mgr.removeUselessSymbols()
-mgr.removeEpsRules()
-print()'''

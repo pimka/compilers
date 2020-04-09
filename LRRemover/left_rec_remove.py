@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import json
 from collections import namedtuple
 
@@ -165,10 +167,3 @@ class Grammar:
                 new_prod.append(pr)
 
         self.productions = new_prod
-
-
-
-'''gr = Grammar('LRRemover/test_grammar copy.json')
-gr.remove_recursion()
-gr.left_factorization()
-print()'''

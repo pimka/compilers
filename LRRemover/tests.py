@@ -1,6 +1,10 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import unittest
 from grammar import ModifiedGrammar
 from left_rec_remove import Grammar
+# активировать среду перед запуском тестов
+
 
 class TestGrammar(unittest.TestCase):
     def setUp(self):
