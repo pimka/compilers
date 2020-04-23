@@ -70,31 +70,6 @@ class ModifiedGrammar:
         result = N[i]
         return result
 
-    def epsSymbols(self):
-        result = set()
-        N = { 0: set()}
-        i = 1
-        prods = []
-
-        for pr in self.productions:
-            for s in pr['right']:
-                if s['name'] == 'ε':
-                    prods.append(pr)
-                    break
-
-        for nonterminal in self.nonterminals:
-            if prods:
-                temp = N[i-1].copy()
-                temp.add(nonterminal)
-                N[i] = temp
-            else:
-                N[i] = N[i-1]
-                
-            result = N[i]
-            i += 1
-
-        return result
-
     def removeUselessSymbols(self):
         usefulSymbols = self.usefulSymbols()
         self.nonterminals = set(self.nonterminals) & usefulSymbols

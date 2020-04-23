@@ -4,6 +4,8 @@ from dfa import DFA
 from rpn import RPN
 from syntax_tree import SyntaxTree
 
+#python -m unittest tests.py
+
 class TestDFA(unittest.TestCase):
     def testConstruct(self):
         test_regex = [

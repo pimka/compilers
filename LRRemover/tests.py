@@ -4,6 +4,7 @@ import unittest
 from grammar import ModifiedGrammar
 from left_rec_remove import Grammar
 # активировать среду перед запуском тестов
+#python -m unittest tests.py
 
 
 class TestGrammar(unittest.TestCase):
