@@ -1,3 +1,12 @@
+from graphviz import Digraph
+
+
+class Node:
+    def __init__(self, parent, child=None):
+        self.parent = parent
+        self.child = child
+        self.id = str(id(self.parent)+id(self.child))
+
 class ParserException(Exception):
     pass
 
@@ -44,7 +53,7 @@ class Parser:
         operations = ['**', 'abs', 'not']
         for op in operations:
             if self.accept(op):
-                return True, ('hi_pr_op', op)
+                return True, Node('hi_pr_op', op)
 
         return False, None
 
@@ -52,7 +61,7 @@ class Parser:
         operations = ['*', '/', 'mod', 'rem']
         for op in operations:
             if self.accept(op):
-                return True, ('mult_op', op)
+                return True, Node('mult_op', op)
 
         return False, None
 
@@ -60,7 +69,7 @@ class Parser:
         operations = ['+', '-']
         for op in operations:
             if self.accept(op):
-                return True, ('un_add_op')
+                return True, Node('un_add_op')
 
         return False, None
 
@@ -68,7 +77,7 @@ class Parser:
         operations = ['+', '-', '&']
         for op in operations:
             if self.accept(op):
-                return True, ('bin_add_op')
+                return True, Node('bin_add_op')
 
         return False, None
 
@@ -76,7 +85,7 @@ class Parser:
         operations = ['<', '<=', '=', '/>', '>', '>=']
         for op in operations:
             if self.accept(op):
-                return True, ('comp_op')
+                return True, Node('comp_op')
 
         return False, None
 
@@ -84,15 +93,15 @@ class Parser:
         operations = ['and', 'or', 'xor']
         for op in operations:
             if self.accept(op):
-                return True, ('log_op')
+                return True, Node('log_op')
 
         return False, None
 
     def primary(self):
         if self.accept('987'):
-            return True, ('primary', '987')
+            return True, Node('primary', '987')
         if self.accept('xyz'):
-            return True, ('primary', 'xyz')
+            return True, Node('primary', 'xyz')
         if self.accept('('):
             isSuccess, oper = self.expression()
             if not isSuccess:
@@ -100,7 +109,7 @@ class Parser:
             if not self.accept(')'):
                 raise ParserException(f'Missing ")" in row-{self.row}, col-{self.col}')
             
-            return True, ('primary', oper)
+            return True, Node('primary', oper)
 
         return False, None
 
@@ -115,7 +124,7 @@ class Parser:
                     if not self.accept('}'):
                         raise ParserException(f'Missing "{"}"}" in row-{self.row}, col-{self.col}')
 
-                    return True, ('mult', '**', oper, oper2)
+                    return True, Node('mult', ['**', oper, oper2])
                 
                 raise ParserException(f'Missing "**" in row-{self.row}, col-{self.col}')
             
@@ -126,14 +135,14 @@ class Parser:
             if not isSuccess:
                 raise ParserException(f'Primary exception in row-{self.row}, col-{self.col}')
             
-            return True, ('mult', ('abs', oper))
+            return True, Node('mult', ['abs', oper])
         
         if self.accept('not'):
             isSuccess, oper = self.primary()
             if not isSuccess:
                 raise ParserException(f'Primary exception in row-{self.row}, col-{self.col}')
             
-            return True, ('mult', ('not', oper))
+            return True, Node('mult', ['not', oper])
 
         return False, None
 
@@ -149,7 +158,7 @@ class Parser:
                     if not self.accept('}'):
                         raise ParserException(f'Missing "{"}"}" in row-{self.row}, col-{self.col}')
                     
-                    return True, ('term', operMO, oper, operM)
+                    return True, Node('term', [operMO, oper, operM])
                 
                 raise ParserException(f'Missing multiplication operation in row-{self.row}, col-{self.col}')
 
@@ -173,7 +182,7 @@ class Parser:
                                 if not self.accept('}'):
                                     raise ParserException(f'Missing "{"}"}" in row-{self.row}, col-{self.col}')
 
-                                return True, ('sim_expr', operUAO, operT, operBAO, operT2)
+                                return True, Node('sim_expr', [operUAO, operT, operBAO, operT2])
 
                             raise ParserException(f'BAO exception in row-{self.row}, col-{self.col}')
 
@@ -199,7 +208,7 @@ class Parser:
                     if not self.accept(']'):
                         raise ParserException(f'Missing "{"]"}" in row-{self.row}, col-{self.col}')
 
-                    return True, ('compare', operSE, operCO, operSE2)
+                    return True, Node('compare', [operSE, operCO, operSE2])
 
                 raise ParserException(f'CO exception in row-{self.row}, col-{self.col}')
             
@@ -219,7 +228,7 @@ class Parser:
                     if not self.accept('}'):
                         raise ParserException(f'Missing "{"}"}" in row-{self.row}, col-{self.col}')
 
-                    return True, ('expr', operC, operLO, operC2)
+                    return True, Node('expr', [operC, operLO, operC2])
 
                 raise ParserException(f'LO exception in row-{self.row}, col-{self.col}')
             
@@ -234,13 +243,13 @@ class Parser:
                 if not isSuccessE:
                     raise ParserException(f'Expression exception in row-{self.row}, col-{self.col}')
 
-                return True, ('oper', operE)
+                return True, Node('oper', operE)
 
             raise ParserException(f'Missing "=" in row-{self.row}, col-{self.col}')
             
         isSuccessU, operU = self.unit()
         if isSuccessU:
-            return True, ('oper', operU)
+            return True, Node('oper', operU)
 
         return False, None
 
@@ -252,12 +261,12 @@ class Parser:
                 if not isSuccessT:
                     raise ParserException(f'Tail exception in row-{self.row}, col-{self.col}')
 
-                return True, ('tail', operO, operT)
+                return True, Node('tail', [operO, operT])
 
 
             raise ParserException(f'Operator exception in row-{self.row}, col-{self.col}')
 
-        return True, ('tail')
+        return True, Node('tail')
 
     def operator_list(self):
         isSuccessO, operO = self.operator()
@@ -266,7 +275,7 @@ class Parser:
             if not isSuccessT:
                 raise ParserException(f'Operator list exception in row-{self.row}, col-{self.col}')
 
-            return True, ('oper_list', operO, operT)
+            return True, Node('oper_list', [operO, operT])
 
         return False, None
 
@@ -278,21 +287,45 @@ class Parser:
             if not self.accept('}'):
                 raise ParserException(f'Missing "{"}"}" in row-{self.row}, col-{self.col}')
 
-            return True, ('unit', operOL)
+            return True, Node('unit', operOL)
 
         return False, None
 
     def program(self):
         isSuccessU, operU = self.unit()
         if isSuccessU:
-            return True, ('prog', operU)
+            return True, Node('prog', operU)
 
         return False, None
 
     def run(self):
         _, program = self.program()
+        gr = Digraph('gr', filename='test.gv')
+        self.__graph(gr, program)
+        gr.view()
 
         return self.i == len(self.input), program
+
+    def __graph(self, graph, node):
+        graph.node(node.id, node.parent)
+        if type(node.child) is Node:
+            nodes = self.__graph(graph, node.child)
+            graph.edge(node.id, nodes)
+        elif node.child is None:
+            return node.id
+        elif type(node.child) is str:
+            graph.node(str(id(node.child)), node.child)
+            graph.edge(node.id, str(id(node.child)))
+        else:
+            for i in node.child:
+                if type(i) is str:
+                    graph.node(str(id(i)), i)
+                    graph.edge(node.id, str(id(i)))
+                else:
+                    nodes = self.__graph(graph, i)
+                    graph.edge(node.id, nodes)
+        return node.id
+        
 
 if __name__ == "__main__":
     filename = 'RDP/programs/success.txt'
