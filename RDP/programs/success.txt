@@ -1,6 +1,6 @@
 {
     abc=[+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]{and [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]};
     {
-        abc=[+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]{and [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]}
+        abc=[+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]{and [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}[> [+]abs xyz{mod not 987}{& abs xyz{mod not 987}}]};
     }
 }

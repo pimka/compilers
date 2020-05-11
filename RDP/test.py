@@ -1,11 +1,11 @@
 import unittest
 
-from RDP.g5 import Parser, ParserException
+from g5 import Parser, ParserException
 
 #python -m unittest tests.py
 class TestG5(unittest.TestCase):
     def test_success(self):
-        test_case = 'RDP/programs/success.txt'
+        test_case = 'programs/success.txt'
         s = ''
         with open(test_case) as f:
             s = f.read()
@@ -13,7 +13,7 @@ class TestG5(unittest.TestCase):
         p.run()
 
     def test_fail(self):
-        path = 'RDP/programs/'
+        path = 'programs/'
         test_cases = [
             'miss_close_bracket.txt',
             'miss_oper.txt'
