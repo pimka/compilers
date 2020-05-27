@@ -7,11 +7,11 @@ class Parser:
     def __next(self, string):
         current = string[0]
 
-        if current in ('>', '=') and len(string) > 1 and string[1] == '=':
+        if current == '>' and len(string) > 1 and string[1] == '=':
             current += string[1]
             string = string[2:]
 
-        elif current in ('<') and len(string) > 1 and string[1] in ('=', '>'):
+        elif current == '<' and len(string) > 1 and string[1] in ('=', '>'):
             current += string[1]
             string = string[2:]
 
@@ -20,30 +20,65 @@ class Parser:
 
         return string, current
 
+    def __tokens(self, string):
+        tokens = []
+
+        while string:
+            current = string[0]
+
+            if current == '>' and len(string) > 1 and string[1] == '=':
+                current += string[1]
+                string = string[2:]
+
+            elif current == '<' and len(string) > 1 and string[1] in ('=', '>'):
+                current += string[1]
+                string = string[2:]
+
+            else:
+                string = string[1:]
+
+            tokens.append(current)
+
+        return tokens
+
+    def __matrix(self, tokens):
+        matrix = dict.fromkeys(tokens)
+        keys = list(matrix.keys())
+        for key, _ in matrix.items():
+            matrix[key] = ['' for i in keys]
+
+        for key1 in keys:
+            for key2 in keys:
+                matrix[key2][keys.index(key1)] = self.__priority(key1, key2)
+
+        return matrix
+
     def parse(self, input_string):
         stack = ['$']
-        string = ''.join(input_string.split(' ')) + '$'
         postfix_stack = []
         tokens_stack = []
+        tokens = self.__tokens(''.join(input_string.split(' ')) + '$')
+        matrix = self.__matrix(tokens)
+        keys = list(matrix.keys())
 
-        while stack != ['$', 'E'] or string != '$':
-            string, token = self.__next(string)
+        while stack != ['$', 'E'] or tokens != ['$']:
+            token = tokens.pop(0)
 
             if token in self.tokens:
                 tokens_stack.append(token)
 
             last_token = [i for i in stack if i != 'E'][-1]
-            priority = self.__priority(last_token, token)
+            priority = matrix[token][keys.index(last_token)]
 
             if priority is None:
                 raise Exception(f'Not found for {last_token} -- {token}')
 
             elif priority == '>':
-                string = token + string
+                tokens.insert(0, token)
 
                 if not stack:
                     raise Exception(
-                        f'Stack is empty for token {token} and string {string}')
+                        f'Stack is empty for token {token} and string {"".join(tokens)}')
 
                 for i in range(1, len(stack)):
                     _slice = stack[-i:]
@@ -123,6 +158,6 @@ class Parser:
 
 
 if __name__ == "__main__":
-    test = '(1*2+9) >= (2*3-6)'
+    test = '(1*2+9) <> (2*3-6)'
     p = Parser()
     print(p.parse(test))

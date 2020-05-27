@@ -1,6 +1,6 @@
 from unittest import TestCase
 from parse import Parser
-
+#python -m unittest test.py
 
 class ParserTestCase(TestCase):
     def test_parser(self):
