@@ -4,22 +4,6 @@ class Parser:
     mult_op = ['*', '/']
     tokens = [str(i) for i in range(10)]
 
-    def __next(self, string):
-        current = string[0]
-
-        if current == '>' and len(string) > 1 and string[1] == '=':
-            current += string[1]
-            string = string[2:]
-
-        elif current == '<' and len(string) > 1 and string[1] in ('=', '>'):
-            current += string[1]
-            string = string[2:]
-
-        else:
-            string = string[1:]
-
-        return string, current
-
     def __tokens(self, string):
         tokens = []
 
